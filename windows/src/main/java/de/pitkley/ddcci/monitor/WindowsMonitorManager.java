@@ -1,16 +1,10 @@
-package de.pitkley.ddcci.windows.monitor;
+package de.pitkley.ddcci.monitor;
 
 import com.sun.jna.platform.win32.Dxva2;
-import com.sun.jna.platform.win32.PhysicalMonitorEnumerationAPI;
 import com.sun.jna.platform.win32.User32;
-import de.pitkley.ddcci.monitor.Monitor;
-import de.pitkley.ddcci.monitor.MonitorManager;
-import de.pitkley.ddcci.monitor.OperatingSystemIdentifier;
-import de.pitkley.ddcci.monitor.UnsupportedOperatingSystemException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.sun.jna.platform.win32.PhysicalMonitorEnumerationAPI.*;

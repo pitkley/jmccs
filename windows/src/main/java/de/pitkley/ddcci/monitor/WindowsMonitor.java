@@ -1,8 +1,6 @@
-package de.pitkley.ddcci.windows.monitor;
+package de.pitkley.ddcci.monitor;
 
 import com.sun.jna.platform.win32.Dxva2;
-import de.pitkley.ddcci.monitor.Monitor;
-import de.pitkley.ddcci.monitor.MonitorCapability;
 
 import java.io.IOException;
 import java.util.Optional;

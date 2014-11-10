@@ -1,9 +1,6 @@
 package de.pitkley.ddcci.main;
 
-import de.pitkley.ddcci.monitor.Monitor;
-import de.pitkley.ddcci.monitor.MonitorCapability;
-import de.pitkley.ddcci.monitor.MonitorManager;
-import de.pitkley.ddcci.monitor.Monitors;
+import de.pitkley.ddcci.monitor.*;
 
 import java.util.List;
 

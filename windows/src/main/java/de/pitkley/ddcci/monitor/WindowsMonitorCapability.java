@@ -1,8 +1,6 @@
-package de.pitkley.ddcci.windows.monitor;
+package de.pitkley.ddcci.monitor;
 
-import com.sun.jna.platform.win32.HighLevelMonitorConfigurationAPI;
 import com.sun.jna.platform.win32.HighLevelMonitorConfigurationAPI.MC_CAPS;
-import de.pitkley.ddcci.monitor.MonitorCapability;
 
 import java.util.EnumSet;
 import java.util.HashMap;
