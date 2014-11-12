@@ -9,7 +9,7 @@ import static com.sun.jna.platform.win32.PhysicalMonitorEnumerationAPI.PHYSICAL_
 import static com.sun.jna.platform.win32.WinDef.DWORDByReference;
 
 public class WindowsMonitor implements Monitor {
-    private static final Dxva2 dxva2 = Dxva2.INSTANCE;
+    private static final Dxva2 DXVA2 = Dxva2.INSTANCE;
 
     private final PHYSICAL_MONITOR physical_monitor;
 
@@ -26,7 +26,7 @@ public class WindowsMonitor implements Monitor {
 
         DWORDByReference pdwMonitorCapabilities = new DWORDByReference();
         DWORDByReference pdwSupportedColorTemperatures = new DWORDByReference();
-        dxva2.GetMonitorCapabilities(physical_monitor.hPhysicalMonitor, pdwMonitorCapabilities, pdwSupportedColorTemperatures);
+        DXVA2.GetMonitorCapabilities(physical_monitor.hPhysicalMonitor, pdwMonitorCapabilities, pdwSupportedColorTemperatures);
         monitorCapabilities = pdwMonitorCapabilities.getValue().longValue();
         supportedColorTemperatures = pdwSupportedColorTemperatures.getValue().longValue();
     }
@@ -56,7 +56,7 @@ public class WindowsMonitor implements Monitor {
         DWORDByReference pdwMinimumBrightness = new DWORDByReference();
         DWORDByReference pdwCurrentBrightness = new DWORDByReference();
         DWORDByReference pdwMaximumBrightness = new DWORDByReference();
-        dxva2.GetMonitorBrightness(physical_monitor.hPhysicalMonitor, pdwMinimumBrightness, pdwCurrentBrightness, pdwMaximumBrightness);
+        DXVA2.GetMonitorBrightness(physical_monitor.hPhysicalMonitor, pdwMinimumBrightness, pdwCurrentBrightness, pdwMaximumBrightness);
 
         this.minimumBrightness = pdwMinimumBrightness.getValue().intValue();
         this.maximumBrightness = pdwMaximumBrightness.getValue().intValue();
@@ -87,7 +87,7 @@ public class WindowsMonitor implements Monitor {
             throw new IllegalArgumentException("Brightness of '" + brightness + "'was above maximum brightness of '" + maximumBrightness + "'");
         }
 
-        dxva2.SetMonitorBrightness(physical_monitor.hPhysicalMonitor, brightness);
+        DXVA2.SetMonitorBrightness(physical_monitor.hPhysicalMonitor, brightness);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class WindowsMonitor implements Monitor {
 
     @Override
     public void close() throws IOException {
-        dxva2.DestroyPhysicalMonitor(physical_monitor.hPhysicalMonitor);
+        DXVA2.DestroyPhysicalMonitor(physical_monitor.hPhysicalMonitor);
         closed = true;
     }
 }

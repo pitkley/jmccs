@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Main {
 
-    private static void testMonitorManager() {
+    private static void testMonitorManager(int brightness) {
         msg("Getting monitor manager");
         MonitorManager monitorManager = Monitors.getMonitorManager();
         msg("Getting monitors");
@@ -28,12 +28,9 @@ public class Main {
                 msg("Getting current brightness...");
                 int currentBrightness = monitor.getCurrentBrightness();
                 msg("Response: " + currentBrightness);
-                if (currentBrightness == 50) {
-                    msg("Setting brightness to 90...");
-                    monitor.setBrightness(90);
-                } else {
-                    msg("Setting brightness to 50...");
-                    monitor.setBrightness(50);
+                if (currentBrightness != brightness) {
+                    msg("Setting brightness to " + brightness + "...");
+                    monitor.setBrightness(brightness);
                 }
             }
         }

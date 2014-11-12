@@ -12,8 +12,8 @@ import static com.sun.jna.platform.win32.WinDef.DWORDByReference;
 import static com.sun.jna.platform.win32.WinUser.HMONITOR;
 
 public class WindowsMonitorManager implements MonitorManager {
-    private static final User32 user32 = User32.INSTANCE;
-    private static final Dxva2 dxva2 = Dxva2.INSTANCE;
+    private static final User32 USER32 = User32.INSTANCE;
+    private static final Dxva2 DXVA2 = Dxva2.INSTANCE;
 
     private final List<Monitor> monitors = new ArrayList<>();
 
@@ -27,17 +27,17 @@ public class WindowsMonitorManager implements MonitorManager {
     @Override
     public List<Monitor> getMonitors() {
         List<HMONITOR> hmonitors = new ArrayList<>();
-        user32.EnumDisplayMonitors(null, null, (hMonitor, hdcMonitor, lprcMonitor, dwData) -> {
+        USER32.EnumDisplayMonitors(null, null, (hMonitor, hdcMonitor, lprcMonitor, dwData) -> {
             hmonitors.add(hMonitor);
             return 1;
         }, null);
 
         for (HMONITOR hmonitor : hmonitors) {
             DWORDByReference count = new DWORDByReference();
-            dxva2.GetNumberOfPhysicalMonitorsFromHMONITOR(hmonitor, count);
+            DXVA2.GetNumberOfPhysicalMonitorsFromHMONITOR(hmonitor, count);
 
             PHYSICAL_MONITOR[] physical_monitors = new PHYSICAL_MONITOR[count.getValue().intValue()];
-            dxva2.GetPhysicalMonitorsFromHMONITOR(hmonitor, count.getValue().intValue(), physical_monitors);
+            DXVA2.GetPhysicalMonitorsFromHMONITOR(hmonitor, count.getValue().intValue(), physical_monitors);
             for (PHYSICAL_MONITOR physical_monitor : physical_monitors) {
                 monitors.add(new WindowsMonitor(physical_monitor));
             }
