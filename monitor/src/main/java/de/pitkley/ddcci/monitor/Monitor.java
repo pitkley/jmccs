@@ -9,6 +9,6 @@ public interface Monitor extends Closeable {
 
    int getMinimumBrightness();
    int getCurrentBrightness();
-   int getMaximumBrighntess();
+   int getMaximumBrightness();
    void setBrightness(int brightness);
 }

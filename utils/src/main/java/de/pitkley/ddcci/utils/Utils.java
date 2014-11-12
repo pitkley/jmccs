@@ -14,8 +14,8 @@ public class Utils {
         try {
             InputStream in = Utils.class.getClassLoader().getResourceAsStream(resourceName);
             byte[] buffer = new byte[1024];
-            int read = -1;
-            File temp = File.createTempFile("ddcci-temp-", null);
+            int read;
+            File temp = File.createTempFile(resourceName + "-", null);
             FileOutputStream fos = new FileOutputStream(temp);
 
             while ((read = in.read(buffer)) != -1) {

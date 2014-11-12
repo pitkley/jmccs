@@ -4,6 +4,7 @@ import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.ptr.PointerByReference;
 import de.pitkley.ddcci.monitor.*;
 
 import java.util.List;
@@ -49,6 +50,15 @@ public class Main {
         msg("max: " + ddcRead.max_value);
     }
 
+    private static void testLibDDCCapString() {
+        LibDDC ddc = LibDDC.INSTANCE;
+        PointerByReference ptrRef = new PointerByReference();
+        ddc.DDCGetCapabilityString(CoreGraphics.INSTANCE.CGMainDisplayID(), ptrRef);
+        String val = ptrRef.getValue().getString(0);
+        msg("val: " + val);
+        ddc.cleanup_pointer(ptrRef.getValue());
+    }
+
     private static void testCoreGraphicsMainDisplayID() {
         System.out.println(CoreGraphics.INSTANCE.CGMainDisplayID().intValue());
     }
@@ -68,7 +78,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        testLibDDCread();
     }
 
     private static long lastMsg = 0L;

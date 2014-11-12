@@ -65,7 +65,7 @@ public class WindowsMonitor implements Monitor {
     }
 
     @Override
-    public int getMaximumBrighntess() {
+    public int getMaximumBrightness() {
         if (this.maximumBrightness == -1) {
             getCurrentBrightness();
         }

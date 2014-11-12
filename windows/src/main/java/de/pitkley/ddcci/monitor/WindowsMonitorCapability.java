@@ -14,7 +14,7 @@ public enum WindowsMonitorCapability {
 
     static {
         for (WindowsMonitorCapability windowsMonitorCapability : EnumSet.allOf(WindowsMonitorCapability.class)) {
-            reverseMap.putIfAbsent(windowsMonitorCapability.getMonitorCapability(), windowsMonitorCapability);
+            reverseMap.put(windowsMonitorCapability.getMonitorCapability(), windowsMonitorCapability);
         }
     }
 
