@@ -1,5 +1,6 @@
 package de.pitkley.ddcci.monitor;
 
+import com.sun.jna.Platform;
 import com.sun.jna.platform.win32.Dxva2;
 import com.sun.jna.platform.win32.User32;
 
@@ -12,16 +13,18 @@ import static com.sun.jna.platform.win32.WinDef.DWORDByReference;
 import static com.sun.jna.platform.win32.WinUser.HMONITOR;
 
 public class WindowsMonitorManager implements MonitorManager {
-    private static final User32 USER32 = User32.INSTANCE;
-    private static final Dxva2 DXVA2 = Dxva2.INSTANCE;
+    private final User32 USER32;
+    private final Dxva2 DXVA2;
 
     private final List<Monitor> monitors = new ArrayList<>();
 
     public WindowsMonitorManager() throws UnsupportedOperatingSystemException {
-        OperatingSystemIdentifier operatingSystemIdentifier = new OperatingSystemIdentifier();
-        if (!operatingSystemIdentifier.isWindows()) {
-            throw new UnsupportedOperatingSystemException("Windows", operatingSystemIdentifier.getOsName());
+        if (!Platform.isWindows()) {
+            throw new UnsupportedOperatingSystemException("Windows", System.getProperty("os.name"));
         }
+
+        USER32 = User32.INSTANCE;
+        DXVA2 = Dxva2.INSTANCE;
     }
 
     @Override
