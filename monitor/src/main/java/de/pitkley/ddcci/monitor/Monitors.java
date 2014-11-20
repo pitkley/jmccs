@@ -20,13 +20,10 @@ public class Monitors {
                 MonitorManager curManager = managers.next();
                 manager = curManager;
                 break;
-            } catch (ServiceConfigurationError ignored) {
-                /**
-                 * To be fair, the exception should only be ignored, if it isn't an instance of
-                 * UnsupportedOperatingSystemException.
-                 *
-                 * TODO Throw appropriate error/exception if classloading failed for a not expected reason
-                 */
+            } catch (ServiceConfigurationError e) {
+                if (!(e.getCause() instanceof UnsupportedOperatingSystemException)) {
+                    throw e;
+                }
             }
         }
 
