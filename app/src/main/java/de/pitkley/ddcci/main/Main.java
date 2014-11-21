@@ -8,10 +8,15 @@ import com.sun.jna.ptr.PointerByReference;
 import de.pitkley.ddcci.monitor.*;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Main {
 
     private static void testMonitorManager(int brightness) {
+        testMonitorManager(brightness, brightness);
+    }
+
+    private static void testMonitorManager(int brightness, int brightnessMain) {
         msg("Getting monitor manager");
         MonitorManager monitorManager = Monitors.getMonitorManager();
         msg("Getting monitors");
@@ -25,12 +30,19 @@ public class Main {
             msg("Response: " + brightnessSupported);
 
             if (brightnessSupported) {
+                int setBrightness = brightness;
+
+                Optional<Monitor> mainMonitor = monitorManager.getMainMonitor();
+                if (mainMonitor.isPresent() && mainMonitor.get().equals(monitor)) {
+                    setBrightness = brightnessMain;
+                }
+
                 msg("Getting current brightness...");
                 int currentBrightness = monitor.getCurrentBrightness();
                 msg("Response: " + currentBrightness);
-                if (currentBrightness != brightness) {
-                    msg("Setting brightness to " + brightness + "...");
-                    monitor.setBrightness(brightness);
+                if (currentBrightness != setBrightness) {
+                    msg("Setting brightness to " + setBrightness + "...");
+                    monitor.setBrightness(setBrightness);
                 }
             }
         }
@@ -75,6 +87,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        testMonitorManager(1, 10);
     }
 
     private static long lastMsg = 0L;

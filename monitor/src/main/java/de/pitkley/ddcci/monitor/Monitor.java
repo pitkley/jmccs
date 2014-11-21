@@ -4,6 +4,8 @@ import java.io.Closeable;
 
 public interface Monitor extends Closeable {
 
+   boolean isMainMonitor();
+
    boolean isCapabilitySupported(MonitorCapability capability);
    boolean isClosed();
 
