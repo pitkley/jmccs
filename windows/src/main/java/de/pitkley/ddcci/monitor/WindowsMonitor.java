@@ -1,17 +1,23 @@
 package de.pitkley.ddcci.monitor;
 
 import com.sun.jna.platform.win32.Dxva2;
+import com.sun.jna.platform.win32.User32;
+import com.sun.jna.platform.win32.WinUser.MONITORINFO;
 
 import java.io.IOException;
 import java.util.Optional;
 
 import static com.sun.jna.platform.win32.PhysicalMonitorEnumerationAPI.PHYSICAL_MONITOR;
 import static com.sun.jna.platform.win32.WinDef.DWORDByReference;
+import static com.sun.jna.platform.win32.WinUser.HMONITOR;
+import static com.sun.jna.platform.win32.WinUser.MONITORINFOF_PRIMARY;
 
 public class WindowsMonitor implements Monitor {
+    private static final User32 USER32 = User32.INSTANCE;
     private static final Dxva2 DXVA2 = Dxva2.INSTANCE;
 
     private final PHYSICAL_MONITOR physical_monitor;
+    private final HMONITOR hmonitor;
 
     private final long monitorCapabilities;
     private final long supportedColorTemperatures;
@@ -21,14 +27,22 @@ public class WindowsMonitor implements Monitor {
 
     private boolean closed = false;
 
-    protected WindowsMonitor(PHYSICAL_MONITOR physical_monitor) {
+    protected WindowsMonitor(PHYSICAL_MONITOR physical_monitor, HMONITOR hmonitor) {
         this.physical_monitor = physical_monitor;
+        this.hmonitor = hmonitor;
 
         DWORDByReference pdwMonitorCapabilities = new DWORDByReference();
         DWORDByReference pdwSupportedColorTemperatures = new DWORDByReference();
         DXVA2.GetMonitorCapabilities(physical_monitor.hPhysicalMonitor, pdwMonitorCapabilities, pdwSupportedColorTemperatures);
         monitorCapabilities = pdwMonitorCapabilities.getValue().longValue();
         supportedColorTemperatures = pdwSupportedColorTemperatures.getValue().longValue();
+    }
+
+    @Override
+    public boolean isMainMonitor() {
+        MONITORINFO monitorinfo = new MONITORINFO();
+        USER32.GetMonitorInfo(this.hmonitor, monitorinfo);
+        return (monitorinfo.dwFlags & MONITORINFOF_PRIMARY) == 1;
     }
 
     public boolean isCapabilitySupported(MonitorCapability capability) {
