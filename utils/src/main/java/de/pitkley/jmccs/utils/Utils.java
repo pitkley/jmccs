@@ -1,4 +1,4 @@
-package de.pitkley.ddcci.utils;
+package de.pitkley.jmccs.utils;
 
 import java.io.File;
 import java.io.FileOutputStream;

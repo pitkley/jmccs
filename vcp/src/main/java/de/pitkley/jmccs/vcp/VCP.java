@@ -1,7 +1,6 @@
-package de.pitkley.ddcci.vcp;
+package de.pitkley.jmccs.vcp;
 
-import de.pitkley.ddcci.monitor.Monitor;
-import de.pitkley.ddcci.monitor.MonitorCapability;
+import de.pitkley.jmccs.monitor.MonitorCapability;
 
 import java.util.*;
 import java.util.regex.Matcher;

@@ -1,4 +1,4 @@
-package de.pitkley.ddcci.monitor;
+package de.pitkley.jmccs.monitor;
 
 import com.sun.jna.platform.win32.Dxva2;
 import com.sun.jna.platform.win32.User32;

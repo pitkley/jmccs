@@ -1,4 +1,4 @@
-package de.pitkley.ddcci.monitor;
+package de.pitkley.jmccs.monitor;
 
 public enum MonitorCapability {
     BRIGHTNESS(0x10);

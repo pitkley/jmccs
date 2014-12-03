@@ -1,11 +1,11 @@
-package de.pitkley.ddcci.main;
+package de.pitkley.jmccs.main;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
-import de.pitkley.ddcci.monitor.*;
+import de.pitkley.jmccs.monitor.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,22 +50,22 @@ public class Main {
         monitorManager.closeMonitors();
     }
 
-    private static void testLibDDCread() {
-        LibDDC ddc = LibDDC.INSTANCE;
-        LibDDC.DDCReadCommand.ByReference ddcRead = new LibDDC.DDCReadCommand.ByReference();
-        ddcRead.control_id = 0x10;
-        ddc.DDCRead(CoreGraphics.INSTANCE.CGMainDisplayID(), ddcRead);
-        msg("current: " + ddcRead.current_value);
-        msg("max: " + ddcRead.max_value);
+    private static void testLibMCCSread() {
+        LibMCCS mccs = LibMCCS.INSTANCE;
+        LibMCCS.MCCSReadCommand.ByReference mccsRead = new LibMCCS.MCCSReadCommand.ByReference();
+        mccsRead.control_id = 0x10;
+        mccs.MCCSRead(CoreGraphics.INSTANCE.CGMainDisplayID(), mccsRead);
+        msg("current: " + mccsRead.current_value);
+        msg("max: " + mccsRead.max_value);
     }
 
-    private static void testLibDDCCapString() {
-        LibDDC ddc = LibDDC.INSTANCE;
+    private static void testLibMCCSCapString() {
+        LibMCCS mccs = LibMCCS.INSTANCE;
         PointerByReference ptrRef = new PointerByReference();
-        ddc.DDCGetCapabilityString(CoreGraphics.INSTANCE.CGMainDisplayID(), ptrRef);
+        mccs.MCCSGetCapabilityString(CoreGraphics.INSTANCE.CGMainDisplayID(), ptrRef);
         String val = ptrRef.getValue().getString(0);
         msg("val: " + val);
-        ddc.cleanup_pointer(ptrRef.getValue());
+        mccs.cleanup_pointer(ptrRef.getValue());
     }
 
     private static void testCoreGraphicsMainDisplayID() {

@@ -1,4 +1,4 @@
-package de.pitkley.ddcci.vcp;
+package de.pitkley.jmccs.vcp;
 
 import java.io.BufferedReader;
 import java.io.File;

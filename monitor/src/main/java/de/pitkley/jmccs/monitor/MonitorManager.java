@@ -1,4 +1,4 @@
-package de.pitkley.ddcci.monitor;
+package de.pitkley.jmccs.monitor;
 
 import java.util.List;
 import java.util.Optional;
