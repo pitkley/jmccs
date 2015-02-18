@@ -95,6 +95,10 @@ public class WindowsMonitor implements Monitor {
             throw new UnsupportedOperationException("Monitor does not support getting brightness");
         }
 
+        if (this.minimumBrightness == -1 || this.maximumBrightness == -1) {
+            getCurrentBrightness();
+        }
+
         if (brightness < minimumBrightness) {
             throw new IllegalArgumentException("Brightness of '" + brightness + "'was below minimum brightness of '" + minimumBrightness + "'");
         } else if (brightness > maximumBrightness) {
