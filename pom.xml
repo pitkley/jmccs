@@ -8,7 +8,7 @@
     <artifactId>main</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>app</module>
+        <module>jmccs</module>
         <module>monitor</module>
         <module>windows</module>
         <module>utils</module>
