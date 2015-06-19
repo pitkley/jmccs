@@ -11,5 +11,12 @@
 
     <artifactId>monitor</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>de.pitkley.jmccs</groupId>
+            <artifactId>vcp</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>
