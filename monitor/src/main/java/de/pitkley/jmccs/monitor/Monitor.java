@@ -1,16 +1,19 @@
 package de.pitkley.jmccs.monitor;
 
+import de.pitkley.jmccs.vcp.VCPCode;
+import de.pitkley.jmccs.vcp.VCPReply;
+
 import java.io.Closeable;
 
-public interface Monitor extends Closeable {
+interface Monitor extends Closeable {
 
-   boolean isMainMonitor();
+    boolean isMainMonitor();
 
-   boolean isCapabilitySupported(MonitorCapability capability);
-   boolean isClosed();
+    boolean isClosed();
 
-   int getMinimumBrightness();
-   int getCurrentBrightness();
-   int getMaximumBrightness();
-   void setBrightness(int brightness);
+    boolean isVCPCodeSupported(VCPCode capability);
+
+    VCPReply getVCPFeature(VCPCode vcpCode);
+
+    void setVCPFeature(VCPCode vcpCode, int value);
 }

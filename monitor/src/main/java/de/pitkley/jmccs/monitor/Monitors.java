@@ -29,7 +29,7 @@ public class Monitors {
 
         if (manager == null) {
             // TODO Throw appropriate error if we found no manager
-            // For now, we just stop with a error
+            // For now, we just stop with an error
             throw new Error("no manager found");
         } else {
             monitorManager = manager;

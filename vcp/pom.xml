@@ -11,12 +11,4 @@
 
     <artifactId>vcp</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>de.pitkley.jmccs</groupId>
-            <artifactId>monitor</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
-
 </project>
