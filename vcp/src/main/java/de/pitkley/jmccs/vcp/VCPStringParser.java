@@ -9,7 +9,7 @@ public class VCPStringParser {
 
     private static final Pattern VALUE = Pattern.compile("(?<code>\\w+)(\\((?<values>.*?)\\))?");
 
-    public static Map<VCPCode, Optional<Set<Integer>>> getCodeListFromVCPString(String vcpString) {
+    public static Map<VCPCode, Optional<Set<Integer>>> parse(String vcpString) {
         Map<VCPCode, Optional<Set<Integer>>> codes = new HashMap<>();
         Matcher matcher = VALUE.matcher(vcpString);
         while (matcher.find()) {

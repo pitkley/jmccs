@@ -9,11 +9,11 @@ interface Monitor extends Closeable {
 
     boolean isMainMonitor();
 
-    boolean isClosed();
-
-    boolean isVCPCodeSupported(VCPCode capability);
+    boolean isVCPCodeSupported(VCPCode vcpCode);
 
     VCPReply getVCPFeature(VCPCode vcpCode);
 
-    void setVCPFeature(VCPCode vcpCode, int value);
+    boolean setVCPFeature(VCPCode vcpCode, int value);
+
+    boolean isClosed();
 }

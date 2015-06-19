@@ -1,14 +1,21 @@
 package de.pitkley.jmccs.monitor;
 
+import com.sun.jna.Memory;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Dxva2;
 import com.sun.jna.platform.win32.User32;
+import com.sun.jna.platform.win32.WTypes;
 import com.sun.jna.platform.win32.WinUser.MONITORINFO;
+import de.pitkley.jmccs.vcp.*;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.sun.jna.platform.win32.PhysicalMonitorEnumerationAPI.PHYSICAL_MONITOR;
-import static com.sun.jna.platform.win32.WinDef.DWORDByReference;
+import static com.sun.jna.platform.win32.WinDef.*;
 import static com.sun.jna.platform.win32.WinUser.HMONITOR;
 import static com.sun.jna.platform.win32.WinUser.MONITORINFOF_PRIMARY;
 
@@ -19,93 +26,89 @@ public class WindowsMonitor implements Monitor {
     private final PHYSICAL_MONITOR physical_monitor;
     private final HMONITOR hmonitor;
 
-    private final long monitorCapabilities;
-    private final long supportedColorTemperatures;
-
-    private int minimumBrightness = -1;
-    private int maximumBrightness = -1;
+    private final Map<VCPCode, Optional<Set<Integer>>> supportedVCPCodes;
 
     private boolean closed = false;
 
-    protected WindowsMonitor(PHYSICAL_MONITOR physical_monitor, HMONITOR hmonitor) {
+    protected WindowsMonitor(PHYSICAL_MONITOR physical_monitor, HMONITOR hmonitor) throws VCPStringFormatException {
         this.physical_monitor = physical_monitor;
         this.hmonitor = hmonitor;
 
-        DWORDByReference pdwMonitorCapabilities = new DWORDByReference();
-        DWORDByReference pdwSupportedColorTemperatures = new DWORDByReference();
-        DXVA2.GetMonitorCapabilities(physical_monitor.hPhysicalMonitor, pdwMonitorCapabilities, pdwSupportedColorTemperatures);
-        monitorCapabilities = pdwMonitorCapabilities.getValue().longValue();
-        supportedColorTemperatures = pdwSupportedColorTemperatures.getValue().longValue();
+        DWORDByReference pdwCapabilitiesStringLengthInCharacters = new DWORDByReference();
+        DXVA2.GetCapabilitiesStringLength(physical_monitor.hPhysicalMonitor, pdwCapabilitiesStringLengthInCharacters);
+
+        int capabilitiesStringLengthInCharacters = pdwCapabilitiesStringLengthInCharacters.getValue().intValue();
+
+        Pointer p = new Memory(capabilitiesStringLengthInCharacters);
+        WTypes.LPSTR pszASCIICapabilitiesString = new WTypes.LPSTR(p);
+
+        DXVA2.CapabilitiesRequestAndCapabilitiesReply(physical_monitor.hPhysicalMonitor,
+                pszASCIICapabilitiesString,
+                pdwCapabilitiesStringLengthInCharacters.getValue());
+
+        String capabilityString = Native.toString(p.getByteArray(0, capabilitiesStringLengthInCharacters));
+        if (capabilityString == null || capabilityString.isEmpty()) {
+            throw new VCPStringFormatException("Unable to get capabilities string");
+        }
+
+        String vcpString = CapabilityStringParser.parse(capabilityString).get("vcp");
+        if (vcpString == null || vcpString.isEmpty()) {
+            throw new VCPStringFormatException("Capabilities string is missing the supported VCP codes");
+        }
+
+        supportedVCPCodes = VCPStringParser.parse(vcpString);
     }
 
     @Override
     public boolean isMainMonitor() {
+        if (closed) {
+            throw new IllegalStateException("Monitor is already closed");
+        }
+
         MONITORINFO monitorinfo = new MONITORINFO();
         USER32.GetMonitorInfo(this.hmonitor, monitorinfo);
         return (monitorinfo.dwFlags & MONITORINFOF_PRIMARY) == 1;
     }
 
-    public boolean isCapabilitySupported(MonitorCapability capability) {
-        Optional<WindowsMonitorCapability> windowsMonitorCapability = WindowsMonitorCapability.get(capability);
-        return windowsMonitorCapability.isPresent() && (monitorCapabilities & windowsMonitorCapability.get().getMcCapability().getFlag()) != 0;
+    @Override
+    public boolean isVCPCodeSupported(VCPCode vcpCode) {
+        return supportedVCPCodes.containsKey(vcpCode);
     }
 
     @Override
-    public int getMinimumBrightness() {
-        if (this.minimumBrightness == -1) {
-            getCurrentBrightness();
+    public VCPReply getVCPFeature(VCPCode vcpCode) {
+        if (closed) {
+            throw new IllegalStateException("Monitor is already closed");
         }
-        return minimumBrightness;
+        if (!isVCPCodeSupported(vcpCode)) {
+            throw new UnsupportedOperationException("The supplied VCP-code is not supported by the monitor");
+        }
+
+        DWORDByReference pdwCurrentValue = new DWORDByReference();
+        DWORDByReference pdwMaximumValue = new DWORDByReference();
+        DXVA2.GetVCPFeatureAndVCPFeatureReply(physical_monitor.hPhysicalMonitor,
+                new BYTE(vcpCode.getCode()),
+                null,
+                pdwCurrentValue,
+                pdwMaximumValue);
+
+        VCPReply reply = new VCPReply(pdwCurrentValue.getValue().intValue(), pdwMaximumValue.getValue().intValue());
+        return reply;
     }
 
     @Override
-    public int getCurrentBrightness() {
-        if (isClosed()) {
-            throw new UnsupportedOperationException("Monitor is already closed");
+    public boolean setVCPFeature(VCPCode vcpCode, int value) {
+        if (closed) {
+            throw new IllegalStateException("Monitor is already closed");
         }
-        if (!isCapabilitySupported(MonitorCapability.BRIGHTNESS)) {
-            throw new UnsupportedOperationException("Monitor does not support getting brightness");
-        }
-
-        DWORDByReference pdwMinimumBrightness = new DWORDByReference();
-        DWORDByReference pdwCurrentBrightness = new DWORDByReference();
-        DWORDByReference pdwMaximumBrightness = new DWORDByReference();
-        DXVA2.GetMonitorBrightness(physical_monitor.hPhysicalMonitor, pdwMinimumBrightness, pdwCurrentBrightness, pdwMaximumBrightness);
-
-        this.minimumBrightness = pdwMinimumBrightness.getValue().intValue();
-        this.maximumBrightness = pdwMaximumBrightness.getValue().intValue();
-
-        return pdwCurrentBrightness.getValue().intValue();
-    }
-
-    @Override
-    public int getMaximumBrightness() {
-        if (this.maximumBrightness == -1) {
-            getCurrentBrightness();
-        }
-        return maximumBrightness;
-    }
-
-    @Override
-    public void setBrightness(int brightness) {
-        if (isClosed()) {
-            throw new UnsupportedOperationException("Monitor is already closed");
-        }
-        if (!isCapabilitySupported(MonitorCapability.BRIGHTNESS)) {
-            throw new UnsupportedOperationException("Monitor does not support getting brightness");
+        if (!isVCPCodeSupported(vcpCode)) {
+            throw new UnsupportedOperationException("The supplied VCP-code is not supported by the monitor");
         }
 
-        if (this.minimumBrightness == -1 || this.maximumBrightness == -1) {
-            getCurrentBrightness();
-        }
+        DWORD dwNewValue = new DWORD(value);
+        BOOL result = DXVA2.SetVCPFeature(physical_monitor.hPhysicalMonitor, null, dwNewValue);
 
-        if (brightness < minimumBrightness) {
-            throw new IllegalArgumentException("Brightness of '" + brightness + "'was below minimum brightness of '" + minimumBrightness + "'");
-        } else if (brightness > maximumBrightness) {
-            throw new IllegalArgumentException("Brightness of '" + brightness + "'was above maximum brightness of '" + maximumBrightness + "'");
-        }
-
-        DXVA2.SetMonitorBrightness(physical_monitor.hPhysicalMonitor, brightness);
+        return result.booleanValue();
     }
 
     @Override
@@ -116,6 +119,10 @@ public class WindowsMonitor implements Monitor {
 
     @Override
     public void close() throws IOException {
+        if (closed) {
+            throw new IllegalStateException("Monitor is already closed");
+        }
+
         DXVA2.DestroyPhysicalMonitor(physical_monitor.hPhysicalMonitor);
         closed = true;
     }
