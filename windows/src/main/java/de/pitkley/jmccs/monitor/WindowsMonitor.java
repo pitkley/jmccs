@@ -7,7 +7,6 @@ import com.sun.jna.platform.win32.Dxva2;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WTypes;
 import com.sun.jna.platform.win32.WinUser.MONITORINFO;
-import de.pitkley.jmccs.vcp.*;
 
 import java.io.IOException;
 import java.util.Map;
@@ -106,7 +105,7 @@ public class WindowsMonitor implements Monitor {
         }
 
         DWORD dwNewValue = new DWORD(value);
-        BOOL result = DXVA2.SetVCPFeature(physical_monitor.hPhysicalMonitor, null, dwNewValue);
+        BOOL result = DXVA2.SetVCPFeature(physical_monitor.hPhysicalMonitor, new BYTE(vcpCode.getCode()), dwNewValue);
 
         return result.booleanValue();
     }

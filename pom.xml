@@ -12,7 +12,6 @@
         <module>monitor</module>
         <module>windows</module>
         <module>utils</module>
-        <module>vcp</module>
     </modules>
     <packaging>pom</packaging>
 

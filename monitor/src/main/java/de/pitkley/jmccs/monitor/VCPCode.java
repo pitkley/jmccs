@@ -1,4 +1,4 @@
-package de.pitkley.jmccs.vcp;
+package de.pitkley.jmccs.monitor;
 
 import java.util.*;
 

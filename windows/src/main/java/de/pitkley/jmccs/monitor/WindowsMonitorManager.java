@@ -3,7 +3,6 @@ package de.pitkley.jmccs.monitor;
 import com.sun.jna.Platform;
 import com.sun.jna.platform.win32.Dxva2;
 import com.sun.jna.platform.win32.User32;
-import de.pitkley.jmccs.vcp.VCPStringFormatException;
 
 import java.io.IOException;
 import java.util.ArrayList;

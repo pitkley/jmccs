@@ -1,4 +1,4 @@
-package de.pitkley.jmccs.vcp;
+package de.pitkley.jmccs.monitor;
 
 public class VCPReply {
     private final int minimum = 0;
