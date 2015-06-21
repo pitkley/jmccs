@@ -27,7 +27,9 @@ public class VCPStringParser {
                         .map((e) -> Integer.parseInt(e, 16))
                         .collect(Collectors.toSet()));
             } else {
-                values = vcpCode.getValues();
+                values = Optional.empty();
+//                values = vcpCode.getValues();
+                // TODO refactor this to work with `.isLegal`
             }
 
             codes.put(vcpCode, values);
