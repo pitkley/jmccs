@@ -12,7 +12,7 @@ import static com.sun.jna.platform.win32.PhysicalMonitorEnumerationAPI.PHYSICAL_
 import static com.sun.jna.platform.win32.WinDef.DWORDByReference;
 import static com.sun.jna.platform.win32.WinUser.HMONITOR;
 
-public class WindowsMonitorManager implements MonitorManager {
+public class WindowsMonitorManager extends MonitorManager {
     private final User32 USER32;
     private final Dxva2 DXVA2;
 
