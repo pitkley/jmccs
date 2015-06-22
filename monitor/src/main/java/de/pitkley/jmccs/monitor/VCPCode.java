@@ -56,7 +56,7 @@ public enum VCPCode {
      * <p>
      * This will be used in conjunction with VCP code 0Ch, Color temperature request.
      * <p>
-     * Values of 0 and > 5000 are invalid and must be ignored.
+     * Values of 0 and &gt; 5000 are invalid and must be ignored.
      */
     COLOR_TEMPERATURE_INCREMENT(0x0B, VCPCodeType.READ_ONLY, VCPCodeFunction.NON_CONTINOUS, Helper.POSITIVE_TWO_BYTES),
     /**

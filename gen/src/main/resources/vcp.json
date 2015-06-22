@@ -77,7 +77,7 @@
     "description": [
       "Allows the display to specify the minimum increment in which it can adjust the color temperature.",
       "This will be used in conjunction with VCP code 0Ch, Color temperature request.",
-      "Values of 0 and > 5000 are invalid and must be ignored."
+      "Values of 0 and &gt; 5000 are invalid and must be ignored."
     ],
     "values": "POSITIVE_TWO_BYTES"
   },
