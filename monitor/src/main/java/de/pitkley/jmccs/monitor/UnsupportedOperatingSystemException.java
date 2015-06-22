@@ -1,5 +1,9 @@
 package de.pitkley.jmccs.monitor;
 
+/**
+ * Instantiating a {@link MonitorManager} that is not for the running operating system throws this exception.
+ */
+@SuppressWarnings("JavaDoc")
 public class UnsupportedOperatingSystemException extends Exception {
 
     public UnsupportedOperatingSystemException(String expected, String actual) {

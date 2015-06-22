@@ -2,9 +2,17 @@ package de.pitkley.jmccs.monitor;
 
 import java.util.*;
 
+/**
+ * This abstract class is for managing of physical monitors.
+ */
 public abstract class MonitorManager {
     private static MonitorManager INSTANCE = null;
 
+    /**
+     * Retrieves the (operating system specific) singleton-instance of {@link MonitorManager}.
+     *
+     * @return the (operating system specific) singleton-instance
+     */
     public static MonitorManager get() {
         if (INSTANCE == null) {
             loadManagers();
@@ -37,18 +45,30 @@ public abstract class MonitorManager {
         }
     }
 
+    /**
+     * Returns all monitors recognized by the implementation.
+     *
+     * @return a list of all monitors recognized by the implementation
+     */
     public abstract List<Monitor> getMonitors();
 
     /**
-     * Tries to get the main/primary monitor.
-     * This should maybe return a list, as it is bound to HMONITOR under Windows which may not correlate to a
-     * physical display.
+     * Gets the (first) main monitor it can find among all monitors.
+     * <p>
+     * If the operating system has no notion of <i>main monitor</i>, the {@link Optional} will be empty. See {@link
+     * Monitor#isMainMonitor()} for more information.
      *
-     * @return
+     * @return an optional that either contains the (first) main monitor or is empty
      */
     public Optional<Monitor> getMainMonitor() {
         return getMonitors().stream().filter(Monitor::isMainMonitor).findFirst();
     }
 
+    /**
+     * Closes all monitors.
+     * <p>
+     * Closing a monitor generally refers to freeing up any system-resources or clearing any handles an implementation
+     * might have. If there is no need for closing monitors, this method can be empty.
+     */
     public abstract void closeMonitors();
 }

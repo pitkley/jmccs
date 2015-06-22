@@ -5,11 +5,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * This is a utility-class containing (more or less) regularly used helper-functions.
+ */
 public class Utils {
 
+    /**
+     * Creates a {@link File} for a resource that is on the classpath.
+     * <p>
+     * Adapted from: http://stackoverflow.com/a/4691879/758165
+     *
+     * @param resourceName the name of the resource that is on the classpath
+     * @return a (temporary) file
+     */
     public static String createFileForResource(String resourceName) {
         /**
-         * Adapted from: http://stackoverflow.com/a/4691879/758165
          */
         try {
             InputStream in = Utils.class.getClassLoader().getResourceAsStream(resourceName);
