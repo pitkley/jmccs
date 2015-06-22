@@ -1,0 +1,572 @@
+[
+  {
+    "code": "04h",
+    "vcp_code_name": "Restore Factory Defaults",
+    "type": "WO",
+    "function": "NC",
+    "description": [
+      "Restore all factory presets including luminance / contrast, geometry, color and TV defaults.",
+      "Any non-zero value causes defaults to be restored. A value of zero must be ignored"
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "05h",
+    "vcp_code_name": "Restore Factory Luminance / Contrast Defaults",
+    "type": "WO",
+    "function": "NC",
+    "description": [
+      "Restore factory defaults for luminance and contrast adjustments.",
+      "Any non-zero value causes defaults to be restored. A value of zero must be ignored"
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "06h",
+    "vcp_code_name": "Restore Factory Geometry Defaults",
+    "type": "WO",
+    "function": "NC",
+    "description": [
+      "Restore factory defaults for geometry adjustments.",
+      "Any non-zero value causes defaults to be restored. A value of zero must be ignored"
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "08h",
+    "vcp_code_name": "Restore Factory Color Defaults",
+    "type": "WO",
+    "function": "NC",
+    "description": [
+      "Restore factory defaults for color settings.",
+      "Any non-zero value causes defaults to be restored. A value of zero must be ignored"
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "0Ah",
+    "vcp_code_name": "Restore Factory TV Defaults",
+    "type": "WO",
+    "function": "NC",
+    "description": [
+      "Restore factory defaults for TV functions.",
+      "Any non-zero value causes defaults to be restored. A value of zero must be ignored"
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "B0h",
+    "vcp_code_name": "Settings",
+    "type": "WO",
+    "function": "NC",
+    "description": [
+      "Store / Restore the user saved values for current mode.",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>01h</td><td>Store current settings in the monitor.</td></tr>\n<tr><td>02h</td><td>Restore factory defaults for current mode. If no factory defaults then restore user values for current mode.</td></tr>\n</tbody></table>",
+      "All other values are reserved and must be ignored."
+    ],
+    "values": [
+      "01h",
+      "02h"
+    ]
+  },
+  {
+    "code": "0Bh",
+    "vcp_code_name": "Color Temperature Increment",
+    "type": "RO",
+    "function": "NC",
+    "description": [
+      "Allows the display to specify the minimum increment in which it can adjust the color temperature.",
+      "This will be used in conjunction with VCP code 0Ch, Color temperature request.",
+      "Values of 0 and > 5000 are invalid and must be ignored."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "0Ch",
+    "vcp_code_name": "Color Temperature Request",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Allows a specified color temperature (in K) to be requested. If display is unable to achieve requested color temperature, then it should move to the closest possible temperature.",
+      "A value of 0 must be treated as a request for a color temperature of 3000 K. Values greater than 0 must be used as a multiplier of the color temperature increment (read using VCP 0Bh) and the result added to the base value of 3000 K",
+      "<u>Example:</u>",
+      "If VCP 0Bh returns a value of 50 K and VCP code 0Ch sends a value of 50 (decimal) then the display must interpret this as a request to adjust the color temperature to 5500 K",
+      "(3000 + (50 * 50)) K = 5500 K",
+      "<b><u>Notes:</u></b>",
+      "<ol>\n<li>Applications using this function are recommended to read the actual color temperature after using this command and taking appropriate action.</li>\n<li>This control is only recommended if the display can produce a continuously (at defined increment, see VCP code 0Bh) variable color temperature.</li>\n</ol>",
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "0Eh",
+    "vcp_code_name": "Clock",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value will increase (decrease) the video sampling clock frequency"
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "10h",
+    "vcp_code_name": "Luminance",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value will increase (decrease) the Luminance of the image."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "12h",
+    "vcp_code_name": "Contrast",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value will increase (decrease) the Contrast of the image.",
+      "<b><u>Notes:</u></b>",
+      "<ol>\n<li>The actual range of contrast over which this control applies is defined by the manufacturer.</li>\n<li>Care should be taken to avoid the situation where the contrast ratio approaches 0 … this may be non-recoverable since user will not be able to see the image.</li>\n</ol>"
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "16h",
+    "vcp_code_name": "Video Gain (Drive): Red",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value will increase (decrease) the luminance of red pixels.",
+      "The value returned must be an indication of the actual red gain at the current color temperature and not be normalized."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "17h",
+    "vcp_code_name": "User Color Vision Compensation",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value will increase (decrease) the degree of compensation.",
+      "<b><u>Note:</u></b>",
+      "This is intended to help user suffering from the form of color deficiency in which red colors are poorly seen."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "18h",
+    "vcp_code_name": "Video Gain (Drive): Green",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value will increase (decrease) the luminance of green pixels.",
+      "The value returned must be an indication of the actual green gain at the current color temperature and not be normalized."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "1Ah",
+    "vcp_code_name": "Video Gain (Drive): Blue",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value will increase (decrease) the luminance of blue pixels.",
+      "The value returned must be an indication of the actual blue gain at the current color temperature and not be normalized."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "1Ch",
+    "vcp_code_name": "Focus",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value will adjust the focus of the image."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "1Eh",
+    "vcp_code_name": "Auto Setup",
+    "type": "RW",
+    "function": "NC",
+    "description": [
+      "Perform auto setup function (H/V position, clock, clock phase, A/D converter, etc)",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>00h</td><td>Auto setup is not active</td></tr>\n<tr><td>01h</td><td>Perform / performing auto setup</td></tr>\n<tr><td>02h</td><td>Enable continuous / periodic auto setup</td></tr>\n<tr><td>&gt;= 03h</td><td>Reserved, must be ignored</td></tr>\n</tbody></table>",
+      "<b><u>Note:</u></b>",
+      "A value of 02h (when supported) must cause the display to either continuously or periodically (event or timer driven) perform an auto setup. Cancel by writing a value of either 01h or 00h."
+    ],
+    "values": [
+      "00h",
+      "01h",
+      "02h"
+    ]
+  },
+  {
+    "code": "1Fh",
+    "vcp_code_name": "Auto Color Setup",
+    "type": "RW",
+    "function": "NC",
+    "description": [
+      "Perform auto color setup function (R / G / B gain and offset, A/D setup, etc.)",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>00h</td><td>Auto color setup is not active</td></tr>\n<tr><td>01h</td><td>Perform / performing auto color setup</td></tr>\n<tr><td>02h</td><td>Enable continuous / periodic auto color setup</td></tr>\n<tr><td>&gt;= 03h</td><td>Reserved, must be ignored</td></tr>\n</tbody></table>",
+      "<b><u>Note:</u></b>",
+      "A value of 02h (when supported) must cause the display to either continuously or periodically (event or timer driven) perform an auto color setup. Cancel by writing a value of either 01h or 00h."
+    ],
+    "values": [
+      "00h",
+      "01h",
+      "02h"
+    ]
+  },
+  {
+    "code": "3Eh",
+    "vcp_code_name": "Clock Phase",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value will increase (decrease) the phase shift of the sampling clock."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "56h",
+    "vcp_code_name": "Horizontal Moire",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value controls the horizontal picture moiré cancellation."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "58h",
+    "vcp_code_name": "Vertical Moire",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value controls the vertical picture moiré cancellation."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "59h",
+    "vcp_code_name": "Six Axis Saturation Control: Red",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Adjust the red saturation for 6-axis color",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>&gt; 7Fh</td><td>Causes an increase in red saturation</td></tr>\n<tr><td>7Fh</td><td>The nominal (default) value</td></tr>\n<tr><td>&lt; 7Fh</td><td>Causes a decrease in red saturation</td></tr>\n</tbody></table>",
+      "If set = 7fh then display must make no change to the red saturation of the incoming signal.\nIf set != 7Fh, then writing a value = 7Fh must cause the display to return to its nominal (default) setting for red saturation.\nThe +- 7Fh range must be linearly mapped to the actual adjustment range."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "5Ah",
+    "vcp_code_name": "Six Axis Saturation Control: Yellow",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Adjust the yellow saturation for 6-axis color",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>&gt; 7Fh</td><td>Causes an increase in yellow saturation</td></tr>\n<tr><td>7Fh</td><td>The nominal (default) value</td></tr>\n<tr><td>&lt; 7Fh</td><td>Causes a decrease in yellow saturation</td></tr>\n</tbody></table>",
+      "If set = 7fh then display must make no change to the yellow saturation of the incoming signal.\nIf set != 7Fh, then writing a value = 7Fh must cause the display to return to its nominal (default) setting for yellow saturation.\nThe +- 7Fh range must be linearly mapped to the actual adjustment range."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "5Bh",
+    "vcp_code_name": "Six Axis Saturation Control: Green",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Adjust the green saturation for 6-axis color",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>&gt; 7Fh</td><td>Causes an increase in green saturation</td></tr>\n<tr><td>7Fh</td><td>The nominal (default) value</td></tr>\n<tr><td>&lt; 7Fh</td><td>Causes a decrease in green saturation</td></tr>\n</tbody></table>",
+      "If set = 7fh then display must make no change to the green saturation of the incoming signal.\nIf set != 7Fh, then writing a value = 7Fh must cause the display to return to its nominal (default) setting for green saturation.\nThe +- 7Fh range must be linearly mapped to the actual adjustment range."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "5Ch",
+    "vcp_code_name": "Six Axis Saturation Control: Cyan",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Adjust the cyan saturation for 6-axis color",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>&gt; 7Fh</td><td>Causes an increase in cyan saturation</td></tr>\n<tr><td>7Fh</td><td>The nominal (default) value</td></tr>\n<tr><td>&lt; 7Fh</td><td>Causes a decrease in cyan saturation</td></tr>\n</tbody></table>",
+      "If set = 7fh then display must make no change to the cyan saturation of the incoming signal.\nIf set != 7Fh, then writing a value = 7Fh must cause the display to return to its nominal (default) setting for cyan saturation.\nThe +- 7Fh range must be linearly mapped to the actual adjustment range."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "5Dh",
+    "vcp_code_name": "Six Axis Saturation Control: Blue",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Adjust the blue saturation for 6-axis color",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>&gt; 7Fh</td><td>Causes an increase in blue saturation</td></tr>\n<tr><td>7Fh</td><td>The nominal (default) value</td></tr>\n<tr><td>&lt; 7Fh</td><td>Causes a decrease in blue saturation</td></tr>\n</tbody></table>",
+      "If set = 7fh then display must make no change to the blue saturation of the incoming signal.\nIf set != 7Fh, then writing a value = 7Fh must cause the display to return to its nominal (default) setting for blue saturation.\nThe +- 7Fh range must be linearly mapped to the actual adjustment range."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "5Eh",
+    "vcp_code_name": "Six Axis Saturation Control: Magenta",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Adjust the magenta saturation for 6-axis color",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>&gt; 7Fh</td><td>Causes an increase in magenta saturation</td></tr>\n<tr><td>7Fh</td><td>The nominal (default) value</td></tr>\n<tr><td>&lt; 7Fh</td><td>Causes a decrease in magenta saturation</td></tr>\n</tbody></table>",
+      "If set = 7fh then display must make no change to the magenta saturation of the incoming signal.\nIf set != 7Fh, then writing a value = 7Fh must cause the display to return to its nominal (default) setting for magenta saturation.\nThe +- 7Fh range must be linearly mapped to the actual adjustment range."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "6Ch",
+    "vcp_code_name": "Video Black Level: Red",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value will increase (decrease) the black level of the red video."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "6Eh",
+    "vcp_code_name": "Video Black Level: Green",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value will increase (decrease) the black level of the green video."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "70h",
+    "vcp_code_name": "Video Black Level: Blue",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value will increase (decrease) the black level of the blue video."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "7Ch",
+    "vcp_code_name": "Adjust Zoom",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value will increase (decrease) the zoom function of the projection lens."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "87h",
+    "vcp_code_name": "Sharpness",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Allows one of a range of algorithms to be selected to suit the type of image being displayed and/or personal preference.",
+      "Increasing (decreasing) the value must increase (decrease) the edge sharpness of image features."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "88h",
+    "vcp_code_name": "Velocity Scan Modulation",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this value will increase (decrease) the velocity modulation of the horizontal scan as a function of a change in the luminance level."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "8Ah",
+    "vcp_code_name": "Color Saturation",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing this control increases the amplitude of the color difference components of the video signal.",
+      "The result is an increase in the amount of pure color relative to white in the video. This control applies to the currently active interface."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "8Ch",
+    "vcp_code_name": "TV-Sharpness",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing this control increases the amplitude of the high frequency components of the video signal.",
+      "This allows fine details to be accentuated. This control does not affect the RGB input, only the TV video inputs."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "8Eh",
+    "vcp_code_name": "TV-Contrast",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing (decreasing) this control increases (decreases) the ratio between whites and blacks in the video.",
+      "This control does not affect the RGB input, only the TV video inputs."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "90h",
+    "vcp_code_name": "Hue",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Also known as tint",
+      "Increasing (decreasing) this control increases (decreases) the wavelength of the color component of the video signal.",
+      "The result is a shift towards red (blue) in the hue of all colors. This control applies to the currently active interface."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "92h",
+    "vcp_code_name": "TV-Black Level / Luminance",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Increasing this control increases the black level of the video, resulting in an increase of the luminance level of the video.",
+      "A value of zero represents the darkest level possible.",
+      "This control does not affect the RGB input, only the TV video inputs."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "9Ah",
+    "vcp_code_name": "Window Background",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Changes the contrast ratio between the area of the window and the rest of the desktop",
+      "Lower (higher) values will cause the desktop luminance to decrease (increase)",
+      "<b><u>Notes:</u></b>",
+      "<ol>\n<li>This VCP code should be used in conjunction with VCP 99h</li>\n<li>This command structure is not recommended for new designs, see VCP A5h for alternate.</li>\n</ol>"
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "9Bh",
+    "vcp_code_name": "Six Axis Hue Control: Red",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Adjust the red hue for 6-axis color",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>&gt; 7Fh</td><td>Causes an increase in red hue</td></tr>\n<tr><td>7Fh</td><td>The nominal (default) value</td></tr>\n<tr><td>&lt; 7Fh</td><td>Causes a decrease in red hue</td></tr>\n</tbody></table>",
+      "If set = 7fh then display must make no change to the red hue of the incoming signal.\nIf set != 7Fh, then writing a value = 7Fh must cause the display to return to its nominal (default) setting for red hue.\nThe +- 7Fh range must be linearly mapped to the actual adjustment range."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "9Ch",
+    "vcp_code_name": "Six Axis Hue Control: Yellow",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Adjust the yellow hue for 6-axis color",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>&gt; 7Fh</td><td>Causes an increase in yellow hue</td></tr>\n<tr><td>7Fh</td><td>The nominal (default) value</td></tr>\n<tr><td>&lt; 7Fh</td><td>Causes a decrease in yellow hue</td></tr>\n</tbody></table>",
+      "If set = 7fh then display must make no change to the yellow hue of the incoming signal.\nIf set != 7Fh, then writing a value = 7Fh must cause the display to return to its nominal (default) setting for yellow hue.\nThe +- 7Fh range must be linearly mapped to the actual adjustment range."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "9Dh",
+    "vcp_code_name": "Six Axis Hue Control: Green",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Adjust the green hue for 6-axis color",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>&gt; 7Fh</td><td>Causes an increase in green hue</td></tr>\n<tr><td>7Fh</td><td>The nominal (default) value</td></tr>\n<tr><td>&lt; 7Fh</td><td>Causes a decrease in green hue</td></tr>\n</tbody></table>",
+      "If set = 7fh then display must make no change to the green hue of the incoming signal.\nIf set != 7Fh, then writing a value = 7Fh must cause the display to return to its nominal (default) setting for green hue.\nThe +- 7Fh range must be linearly mapped to the actual adjustment range."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "9Eh",
+    "vcp_code_name": "Six Axis Hue Control: Cyan",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Adjust the cyan hue for 6-axis color",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>&gt; 7Fh</td><td>Causes an increase in cyan hue</td></tr>\n<tr><td>7Fh</td><td>The nominal (default) value</td></tr>\n<tr><td>&lt; 7Fh</td><td>Causes a decrease in cyan hue</td></tr>\n</tbody></table>",
+      "If set = 7fh then display must make no change to the cyan hue of the incoming signal.\nIf set != 7Fh, then writing a value = 7Fh must cause the display to return to its nominal (default) setting for cyan hue.\nThe +- 7Fh range must be linearly mapped to the actual adjustment range."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "9Fh",
+    "vcp_code_name": "Six Axis Hue Control: Blue",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Adjust the blue hue for 6-axis color",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>&gt; 7Fh</td><td>Causes an increase in blue hue</td></tr>\n<tr><td>7Fh</td><td>The nominal (default) value</td></tr>\n<tr><td>&lt; 7Fh</td><td>Causes a decrease in blue hue</td></tr>\n</tbody></table>",
+      "If set = 7fh then display must make no change to the blue hue of the incoming signal.\nIf set != 7Fh, then writing a value = 7Fh must cause the display to return to its nominal (default) setting for blue hue.\nThe +- 7Fh range must be linearly mapped to the actual adjustment range."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "A0h",
+    "vcp_code_name": "Six Axis Hue Control: Magenta",
+    "type": "RW",
+    "function": "C",
+    "description": [
+      "Adjust the magenta hue for 6-axis color",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>&gt; 7Fh</td><td>Causes an increase in magenta hue</td></tr>\n<tr><td>7Fh</td><td>The nominal (default) value</td></tr>\n<tr><td>&lt; 7Fh</td><td>Causes a decrease in magenta hue</td></tr>\n</tbody></table>",
+      "If set = 7fh then display must make no change to the magenta hue of the incoming signal.\nIf set != 7Fh, then writing a value = 7Fh must cause the display to return to its nominal (default) setting for magenta hue.\nThe +- 7Fh range must be linearly mapped to the actual adjustment range."
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "A2h",
+    "vcp_code_name": "Auto Setup On / Off",
+    "type": "WO",
+    "function": "NC",
+    "description": [
+      "Turn on / off the auto setup function (periodic or event driven).",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>00h</td><td>Reserved, must be ignored</td></tr>\n<tr><td>01h</td><td>Turn auto setup off</td></tr>\n<tr><td>02h</td><td>Turn auto setup on</td></tr>\n<tr><td>&gt;= 03h</td><td>Reserved, must be ignored</td></tr>\n</tbody></table>"
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "AAh",
+    "vcp_code_name": "Screen Orientation",
+    "type": "RO",
+    "function": "NC",
+    "description": [
+      "Indicates the orientation of the screen",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>00h</td><td>Reserved</td><td>Shall be ignored</td></tr>\n<tr><td>01h</td><td>0 degrees</td><td>The normal landscape mode</td></tr>\n<tr><td>02h</td><td>90 degrees</td><td>Portrait mode achieved by clockwise rotation of the display 90 degrees.</td></tr>\n<tr><td>03h</td><td>180 degrees</td><td>Landscape mode achieved by rotation of the display 180 degrees.</td></tr>\n<tr><td>04h</td><td>270 degrees</td><td>Portrait mode achieved by clockwise rotation of the display 270 degrees.</td></tr>\n<tr><td>05h to FEh</td><td>Reserved</td><td>Shall be ignored</td></tr>\n<tr><td>FFh</td><td>Not applicable</td><td>Indicates that the display cannot supply the current orientation</td></tr>\n</tbody></table>"
+    ],
+    "values": "POSITIVE_TWO_BYTES"
+  },
+  {
+    "code": "DCh",
+    "vcp_code_name": "Display Application",
+    "type": "RW",
+    "function": "NC",
+    "description": [
+      "Permits the selection of a preset optimized by manufacturer for an application type or the selection of a user defined setting.",
+      "<table>\n<thead><tr><th>Byte: SL</th><th>Description</th></tr></thead>\n<tbody>\n<tr><td>00h</td><td>Stand / default mode</td></tr>\n<tr><td>01h</td><td>Productivity (e.g. office applications)</td></tr>\n<tr><td>02h</td><td>Mixed (e.g. internet with mix of text and images)</td></tr>\n<tr><td>03h</td><td>Movie</td></tr>\n<tr><td>04h</td><td>User defined</td></tr>\n<tr><td>05h</td><td>Games (e.g. games console / PC game)</td></tr>\n<tr><td>06h</td><td>Sports (e.g. fast action)</td></tr>\n<tr><td>07h</td><td>Professional (all signal processing disabled)</td></tr>\n<tr><td>08h</td><td>Standard / default mode with intermediate power consumption</td></tr>\n<tr><td>09h</td><td>Standard / default mode with low power consumption</td></tr>\n<tr><td>0Ah</td><td>Demonstration (used for high visual impact in retail etc)</td></tr>\n<tr><td>0Bh - EFh</td><td>Reserved, must be ignored</td></tr>\n<tr><td>F0h</td><td>Dynamic contrast</td></tr>\n<tr><td>&gt;= F1h</td><td>Reserved, must be ignored</td></tr>\n</tbody></table>"
+    ],
+    "values": [
+      "00h",
+      "01h",
+      "02h",
+      "03h",
+      "04h",
+      "05h",
+      "06h",
+      "07h",
+      "08h",
+      "09h",
+      "0Ah",
+      "F0h"
+    ]
+  }
+]

@@ -12,6 +12,8 @@
         <module>monitor</module>
         <module>windows</module>
         <module>utils</module>
+        <module>gen</module>
+        <module>helper</module>
     </modules>
     <packaging>pom</packaging>
 
