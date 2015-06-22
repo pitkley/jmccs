@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.google.common.base.CaseFormat.LOWER_UNDERSCORE;
@@ -55,7 +56,7 @@ public class GenerateConvenienceClass {
                 String transformedName = transformVCPCodeName(vcpCodeName);
 
                 VCPCode c = VCPCode.valueOf(GenerateEnumEntries.transformVCPCodeName(vcpCodeName));
-                List<MethodSpec> methods = generateMethodsForVCPCode(transformedName, c);
+                List<MethodSpec> methods = generateMethodsForVCPCode(transformedName, c, j.getJSONArray("description"));
                 methods.forEach(monitorHelperBuilder::addMethod);
             }));
         }
@@ -111,26 +112,44 @@ public class GenerateConvenienceClass {
         return methods;
     }
 
-    private static List<MethodSpec> generateMethodsForVCPCode(String name, VCPCode vcpCode) {
+    private static List<MethodSpec> generateMethodsForVCPCode(String name, VCPCode vcpCode, JSONArray description) {
         List<MethodSpec> methods = new ArrayList<>();
         if (vcpCode.getCodeType() == VCPCodeType.READ_ONLY || vcpCode.getCodeType() == VCPCodeType.READ_WRITE) {
-            methods.add(MethodSpec.methodBuilder("get" + name)
-                    .addModifiers(Modifier.PUBLIC)
+            MethodSpec.Builder spec = MethodSpec.methodBuilder("get" + name);
+
+            String javaDoc = IntStream.range(0, description.length())
+                    .mapToObj(description::getString)
+                    .collect(Collectors.joining("\n<p>\n"));
+            spec.addJavadoc(javaDoc);
+
+            spec.addJavadoc("\n\n@return the reply to the sent command\n");
+
+            spec.addModifiers(Modifier.PUBLIC)
                     .returns(VCPReply.class)
-                    .addStatement("return $L.$L($T.$L)", "monitor", "getVCPFeature", vcpCode.getClass(), vcpCode)
-                    .build());
+                    .addStatement("return $L.$L($T.$L)", "monitor", "getVCPFeature", vcpCode.getClass(), vcpCode);
+
+            methods.add(spec.build());
         }
         if (vcpCode.getCodeType() == VCPCodeType.WRITE_ONLY || vcpCode.getCodeType() == VCPCodeType.READ_WRITE) {
-            methods.add(MethodSpec.methodBuilder("set" + name)
-                    .addModifiers(Modifier.PUBLIC)
+            MethodSpec.Builder spec = MethodSpec.methodBuilder("set" + name);
+
+            String javaDoc = IntStream.range(0, description.length())
+                    .mapToObj(description::getString)
+                    .collect(Collectors.joining("\n<p>\n"));
+            spec.addJavadoc(javaDoc);
+
+            spec.addJavadoc("\n\n@param value the value to set the VCP-code to\n")
+                    .addJavadoc("@return <code>true</code> if the command succeeded, otherwise <code>false</code>\n");
+
+            spec.addModifiers(Modifier.PUBLIC)
                     .addParameter(int.class, "value")
                     .returns(boolean.class)
                     .addStatement("$T $L = $T.$L", vcpCode.getClass(), "c", vcpCode.getClass(), vcpCode)
                     .beginControlFlow("if (!$L.$L($L))", "c", "isValueLegal", "value")
                     .addStatement("throw new $T(\"The value '\" + value + \"' is illegal\")", IllegalStateException.class)
                     .endControlFlow()
-                    .addStatement("return $L.$L($L, $L)", "monitor", "setVCPFeature", "c", "value")
-                    .build());
+                    .addStatement("return $L.$L($L, $L)", "monitor", "setVCPFeature", "c", "value");
+            methods.add(spec.build());
         }
 
         return methods;
