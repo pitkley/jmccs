@@ -10,7 +10,6 @@
     <modules>
         <module>jmccs</module>
         <module>monitor</module>
-        <module>windows</module>
         <module>utils</module>
         <module>gen</module>
         <module>helper</module>
