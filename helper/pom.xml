@@ -5,7 +5,7 @@
     <parent>
         <artifactId>main</artifactId>
         <groupId>de.pitkley.jmccs</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.2.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>de.pitkley.jmccs</groupId>
             <artifactId>gen</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>0.2.0-SNAPSHOT</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
