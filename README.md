@@ -1,12 +1,70 @@
 # jMCCS
 
 This is a Java library for controlling monitors using [MCCS](http://en.wikipedia.org/wiki/Monitor_Control_Command_Set) via [DDC/CI](http://en.wikipedia.org/wiki/Display_Data_Channel#DDC.2FCI).
-If the monitor supports DDC/CI, one can use this library to configure (almost) everything one can set via the On-Screen-Display.
+If the monitor supports DDC/CI, this library can be used to configure (almost) everything that can be set via the On-Screen-Display.
 
-This is achieved by using native system-libraries which are either supplied by the operating system itself or included in this library.
-Currently, the following operating systems are supported:
+The library requires operating system-specific implementations, currently the following exist:
 
-- [Windows](windows/src/main/java/de/pitkley/jmccs/monitor/WindowsMonitor.java) using `User32` and `Dxva2` via [JNA](https://github.com/twall/jna)
-- [OS X](osx/src/main/java/de/pitkley/jmccs/monitor/OSXMonitor.java) using the included `libmccs`-library based on [DDC-CI-Tools-for-OS-X](http://github.com/jontaylor/DDC-CI-Tools-for-OS-X) via [JNA](https://github.com/twall/jna)
+* [Windows][jmccs-win]
+* [Mac OS X][jmccs-osx]
 
-To add support for an operating system, one has to provide an implementation of [Monitor](monitor/src/main/java/de/pitkley/jmccs/monitor/Monitor.java) using a *Service Provider Interface*.
+## Using jMCCS
+
+### Maven dependency
+
+jMCCS is a Maven project and available in Maven Central.
+You can use the following snippet to get jMCCS as a dependency.
+
+```xml
+<dependency>
+  <groupId>de.pitkley.jmccs</groupId>
+  <artifactId>jmccs</artifactId>
+  <version>0.2.0</version>
+</dependency>
+```
+
+### Example
+
+Following is a quick example on how you can set the brightness (luminance) of your monitors.
+
+```java
+MonitorManager monitorManager = MonitorManager.get();
+List<Monitor> monitors = monitorManager.getMonitors();
+
+for (Monitor monitor : monitors) {
+    monitor.setVCPFeature(VCPCode.LUMINANCE, 75);
+}
+```
+
+Additionally, you can use the [helper-class][monhelp] to replace any `setVCPFeature`-calls by more meaningful calls.
+
+```java
+MonitorManager monitorManager = MonitorManager.get();
+List<MonitorHelper> monitors = monitorManager.getMonitors()
+                                   .stream()
+                                   .map(MonitorHelper::new)
+                                   .collect(Collectors.toList());
+
+for (MonitorHelper monitor : monitors) {
+    monitor.setLuminance(75);
+}
+```
+
+## Creating an implementation
+
+To add support for an operating system, you have to provide an implementation for the abstract class [MonitorManager][monman] and the interface [Monitor][mon].
+The `MonitorManager` has to be registered as a *Service Provider* by supplying a text-file in the `META-INF`-directory.
+See [this file][spi-ex] as an example.
+(The only dependency you will need is the one above.)
+
+## License
+
+This project is licensed under MIT.
+
+[jmccs-win]: https://github.com/pitkley/jmccs-win
+[jmccs-osx]: https://github.com/pitkley/jmccs-osx
+[monman]: monitor/src/main/java/de/pitkley/jmccs/monitor/MonitorManager.java
+[mon]: monitor/src/main/java/de/pitkley/jmccs/monitor/Monitor.java
+[monhelp]: helper/src/main/java/de/pitkley/jmccs/monitor/MonitorHelper.java
+[spi-ex]: https://github.com/pitkley/jmccs-osx/blob/master/src/main/resources/META-INF/services/de.pitkley.jmccs.monitor.MonitorManager
+
