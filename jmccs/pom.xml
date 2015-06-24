@@ -5,10 +5,9 @@
     <parent>
         <artifactId>main</artifactId>
         <groupId>de.pitkley.jmccs</groupId>
-        <version>0.2.0</version>
+        <version>0.3.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <packaging>pom</packaging>
 
     <artifactId>jmccs</artifactId>
 
@@ -20,17 +19,12 @@
         <dependency>
             <groupId>de.pitkley.jmccs</groupId>
             <artifactId>monitor</artifactId>
-            <version>0.2.0</version>
+            <version>0.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>de.pitkley.jmccs</groupId>
             <artifactId>helper</artifactId>
-            <version>0.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>de.pitkley.jmccs</groupId>
-            <artifactId>utils</artifactId>
-            <version>0.2.0</version>
+            <version>0.3.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
