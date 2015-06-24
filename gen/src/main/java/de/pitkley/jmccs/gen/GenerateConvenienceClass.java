@@ -40,8 +40,11 @@ public class GenerateConvenienceClass {
                         .build()).addSuperinterface(Monitor.class).addField(Monitor.class, "monitor", Modifier
                         .PRIVATE, Modifier.FINAL);
 
-        MethodSpec constructor = MethodSpec.constructorBuilder().addParameter(Monitor.class, "monitor").addStatement
-                ("this.$L = $L", "monitor", "monitor").addModifiers(Modifier.PUBLIC).build();
+        MethodSpec constructor = MethodSpec.constructorBuilder()
+                .addParameter(Monitor.class, "monitor")
+                .addStatement("this.$L = $L", "monitor", "monitor")
+                .addModifiers(Modifier.PUBLIC)
+                .build();
         monitorHelperBuilder.addMethod(constructor);
 
         List<MethodSpec> interfaceMethods = generateInterfaceMethods();
@@ -52,14 +55,17 @@ public class GenerateConvenienceClass {
              BufferedReader br = new BufferedReader(isr)) {
             String vcpJsonString = CharStreams.toString(br);
             JSONArray vcpJson = new JSONArray(vcpJsonString);
-            IntStream.range(0, vcpJson.length()).mapToObj(vcpJson::getJSONObject).forEach((j -> {
-                String vcpCodeName = j.getString("vcp_code_name");
-                String transformedName = transformVCPCodeName(vcpCodeName);
+            IntStream.range(0, vcpJson.length())
+                    .mapToObj(vcpJson::getJSONObject)
+                    .forEach((j -> {
+                        String vcpCodeName = j.getString("vcp_code_name");
+                        String transformedName = transformVCPCodeName(vcpCodeName);
 
-                VCPCode c = VCPCode.valueOf(GenerateEnumEntries.transformVCPCodeName(vcpCodeName));
-                List<MethodSpec> methods = generateMethodsForVCPCode(transformedName, c, j.getJSONArray("description"));
-                methods.forEach(monitorHelperBuilder::addMethod);
-            }));
+                        VCPCode c = VCPCode.valueOf(GenerateEnumEntries.transformVCPCodeName(vcpCodeName));
+                        List<MethodSpec> methods = generateMethodsForVCPCode(transformedName, c, j.getJSONArray
+                                ("description"));
+                        methods.forEach(monitorHelperBuilder::addMethod);
+                    }));
         }
 
         JavaFile javaFile = JavaFile.builder("de.pitkley.jmccs.monitor", monitorHelperBuilder.build()).build();
@@ -69,21 +75,46 @@ public class GenerateConvenienceClass {
     private static List<MethodSpec> generateInterfaceMethods() {
         List<MethodSpec> methods = new ArrayList<>();
 
-        methods.add(MethodSpec.methodBuilder("isMainMonitor").addAnnotation(Override.class).addModifiers(Modifier
-                .PUBLIC).returns(boolean.class).addStatement("return $L.$L()", "monitor", "isMainMonitor").build());
-        methods.add(MethodSpec.methodBuilder("isVCPCodeSupported").addAnnotation(Override.class).addModifiers
-                (Modifier.PUBLIC).returns(boolean.class).addParameter(VCPCode.class, "vcpCode").addStatement("return " +
-                "" + "$L.$L($L)", "monitor", "isVCPCodeSupported", "vcpCode").build());
-        methods.add(MethodSpec.methodBuilder("getVCPFeature").addAnnotation(Override.class).addModifiers(Modifier
-                .PUBLIC).returns(VCPReply.class).addParameter(VCPCode.class, "vcpCode").addStatement("return $L.$L" +
-                "($L)", "monitor", "getVCPFeature", "vcpCode").build());
-        methods.add(MethodSpec.methodBuilder("setVCPFeature").addAnnotation(Override.class).addModifiers(Modifier
-                .PUBLIC).returns(boolean.class).addParameter(VCPCode.class, "vcpCode").addParameter(int.class,
-                "value").addStatement("return $L.$L($L, $L)", "monitor", "setVCPFeature", "vcpCode", "value").build());
-        methods.add(MethodSpec.methodBuilder("isClosed").addAnnotation(Override.class).addModifiers(Modifier.PUBLIC)
-                .returns(boolean.class).addStatement("return $L.$L()", "monitor", "isClosed").build());
-        methods.add(MethodSpec.methodBuilder("close").addAnnotation(Override.class).addModifiers(Modifier.PUBLIC)
-                .addException(IOException.class).addStatement("$L.$L()", "monitor", "close").build());
+        methods.add(MethodSpec.methodBuilder("isMainMonitor")
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(boolean.class)
+                .addStatement("return $L.$L()", "monitor", "isMainMonitor")
+                .build());
+        methods.add(MethodSpec.methodBuilder("isVCPCodeSupported")
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(boolean.class)
+                .addParameter(VCPCode.class, "vcpCode")
+                .addStatement("return $L.$L($L)", "monitor", "isVCPCodeSupported", "vcpCode")
+                .build());
+        methods.add(MethodSpec.methodBuilder("getVCPFeature")
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(VCPReply.class)
+                .addParameter(VCPCode.class, "vcpCode")
+                .addStatement("return $L.$L($L)", "monitor", "getVCPFeature", "vcpCode")
+                .build());
+        methods.add(MethodSpec.methodBuilder("setVCPFeature")
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(boolean.class)
+                .addParameter(VCPCode.class, "vcpCode")
+                .addParameter(int.class, "value")
+                .addStatement("return $L.$L($L, $L)", "monitor", "setVCPFeature", "vcpCode", "value")
+                .build());
+        methods.add(MethodSpec.methodBuilder("isClosed")
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(boolean.class)
+                .addStatement("return $L.$L()", "monitor", "isClosed")
+                .build());
+        methods.add(MethodSpec.methodBuilder("close")
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .addException(IOException.class)
+                .addStatement("$L.$L()", "monitor", "close")
+                .build());
 
         return methods;
     }
@@ -93,32 +124,39 @@ public class GenerateConvenienceClass {
         if (vcpCode.getCodeType() == VCPCodeType.READ_ONLY || vcpCode.getCodeType() == VCPCodeType.READ_WRITE) {
             MethodSpec.Builder spec = MethodSpec.methodBuilder("get" + name);
 
-            String javaDoc = IntStream.range(0, description.length()).mapToObj(description::getString).collect
-                    (Collectors.joining("\n<p>\n"));
+            String javaDoc = IntStream.range(0, description.length())
+                    .mapToObj(description::getString)
+                    .collect(Collectors.joining("\n<p>\n"));
             spec.addJavadoc(javaDoc);
 
             spec.addJavadoc("\n\n@return the reply to the sent command\n");
 
-            spec.addModifiers(Modifier.PUBLIC).returns(VCPReply.class).addStatement("return $L.$L($T.$L)", "monitor",
-                    "getVCPFeature", vcpCode.getClass(), vcpCode);
+            spec.addModifiers(Modifier.PUBLIC)
+                    .returns(VCPReply.class)
+                    .addStatement("return $L.$L($T.$L)", "monitor", "getVCPFeature", vcpCode.getClass(), vcpCode);
 
             methods.add(spec.build());
         }
         if (vcpCode.getCodeType() == VCPCodeType.WRITE_ONLY || vcpCode.getCodeType() == VCPCodeType.READ_WRITE) {
             MethodSpec.Builder spec = MethodSpec.methodBuilder("set" + name);
 
-            String javaDoc = IntStream.range(0, description.length()).mapToObj(description::getString).collect
-                    (Collectors.joining("\n<p>\n"));
+            String javaDoc = IntStream.range(0, description.length())
+                    .mapToObj(description::getString)
+                    .collect(Collectors.joining("\n<p>\n"));
             spec.addJavadoc(javaDoc);
 
-            spec.addJavadoc("\n\n@param value the value to set the VCP-code to\n").addJavadoc("@return " +
-                    "<code>true</code> if the command succeeded, otherwise <code>false</code>\n");
+            spec.addJavadoc("\n\n@param value the value to set the VCP-code to\n")
+                    .addJavadoc("@return <code>true</code> if the command succeeded, otherwise <code>false</code>\n");
 
-            spec.addModifiers(Modifier.PUBLIC).addParameter(int.class, "value").returns(boolean.class).addStatement
-                    ("$T $L = $T.$L", vcpCode.getClass(), "c", vcpCode.getClass(), vcpCode).beginControlFlow("if " +
-                    "(!$L" + ".$L($L))", "c", "isValueLegal", "value").addStatement("throw new $T(\"The value '\" + " +
-                    "value + " + "\"' is illegal\")", IllegalStateException.class).endControlFlow().addStatement
-                    ("return $L.$L($L," + " $L)", "monitor", "setVCPFeature", "c", "value");
+            spec.addModifiers(Modifier.PUBLIC)
+                    .addParameter(int.class, "value")
+                    .returns(boolean.class)
+                    .addStatement("$T $L = $T.$L", vcpCode.getClass(), "c", vcpCode.getClass(), vcpCode)
+                    .beginControlFlow("if (!$L" + ".$L($L))", "c", "isValueLegal", "value")
+                    .addStatement("throw new $T(\"The value '\" + value + \"' is illegal\")",
+                            IllegalStateException.class)
+                    .endControlFlow()
+                    .addStatement("return $L.$L($L, $L)", "monitor", "setVCPFeature", "c", "value");
             methods.add(spec.build());
         }
 
@@ -132,7 +170,7 @@ public class GenerateConvenienceClass {
      * @param args command line arguments, should be one argument that is the path to where the generated sources should
      *             be saved to
      * @throws URISyntaxException if the file <code>vcp.json</code> is not found
-     * @throws IOException if the file <code>vcp.json</code> is not found
+     * @throws IOException        if the file <code>vcp.json</code> is not found
      */
     public static void main(String[] args) throws URISyntaxException, IOException {
         if (args.length != 1) {
@@ -142,7 +180,7 @@ public class GenerateConvenienceClass {
     }
 
     private static String transformVCPCodeName(String vcpCodeName) {
-        return LOWER_UNDERSCORE.to(UPPER_CAMEL, vcpCodeName.trim().replaceAll("[^a-zA-Z0-9\\s]", " ").replaceAll(" "
-                + "+", "_").toLowerCase());
+        return LOWER_UNDERSCORE.to(UPPER_CAMEL,
+                vcpCodeName.trim().replaceAll("[^a-zA-Z0-9\\s]", " ").replaceAll(" +", "_").toLowerCase());
     }
 }
